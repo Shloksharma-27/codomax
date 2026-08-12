@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Papertrail</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body id="dashboard-page">
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="brand">Papertrail<span class="dot">.</span></a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="index.html" data-page="index.html">Home</a>
+      <a href="index.html#latest-articles">Explore</a>
+      <a href="dashboard.html" data-page="dashboard.html">Dashboard</a>
+      <a href="create-blog.html" data-page="create-blog.html">Create Blog</a>
+    </nav>
+    <div class="nav-actions" id="nav-actions-desktop"></div>
+    <button class="hamburger" id="hamburger-btn" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="mobile-menu" id="mobile-menu"></div>
+</header>
+
+<main>
+  <div class="container">
+    <div class="dash-header">
+      <h1 id="dash-greeting">Good to see you</h1>
+      <p>Manage your stories and keep track of your writing.</p>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Total Posts</div>
+        <div class="stat-value" id="stat-total">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Published</div>
+        <div class="stat-value" id="stat-published">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Drafts</div>
+        <div class="stat-value" id="stat-drafts">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Views</div>
+        <div class="stat-value" id="stat-views">0</div>
+      </div>
+    </div>
+
+    <div class="dash-toolbar">
+      <h2>My Posts</h2>
+      <a href="create-blog.html" class="btn btn-primary btn-sm">Create Blog</a>
+    </div>
+
+    <div class="posts-table-wrap">
+      <table class="posts-table">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Views</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="posts-table-body"></tbody>
+      </table>
+    </div>
+
+    <div class="posts-card-list" id="posts-card-list"></div>
+
+    <div class="empty-state hidden" id="dash-empty-state" style="margin: 24px 0 60px;">
+      <h3>No stories yet</h3>
+      <p>Start writing your first article and share your ideas.</p>
+      <a href="create-blog.html" class="btn btn-primary">Create Your First Blog</a>
+    </div>
+
+    <div style="height: 60px;"></div>
+  </div>
+</main>
+
+<div class="modal-overlay" id="delete-modal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title">
+    <h3 id="delete-modal-title">Delete this story?</h3>
+    <p>This action cannot be undone.</p>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-secondary" id="delete-cancel">Cancel</button>
+      <button type="button" class="btn btn-danger" id="delete-confirm">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/data.js"></script>
+<script src="js/main.js"></script>
+<script src="js/dashboard.js"></script>
+</body>
+</html>

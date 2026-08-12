@@ -1,0 +1,310 @@
+/* ============================================
+   Papertrail — Dashboard & Create Blog
+   ============================================ */
+
+.dash-header {
+  padding: 40px 0 8px;
+}
+.dash-header h1 { font-size: 30px; margin-bottom: 8px; }
+.dash-header p { color: var(--muted); font-size: 15px; }
+
+/* ---------- Stat cards ---------- */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  padding: 32px 0;
+}
+.stat-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 22px;
+  background: var(--surface);
+}
+.stat-card .stat-label {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.stat-card .stat-value {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 600;
+}
+
+/* ---------- Dashboard toolbar ---------- */
+.dash-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0 20px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.dash-toolbar h2 { font-size: 20px; }
+
+/* ---------- Posts table ---------- */
+.posts-table-wrap {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--surface);
+}
+.posts-table { width: 100%; border-collapse: collapse; }
+.posts-table th {
+  text-align: left;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  font-weight: 600;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+.posts-table td {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14.5px;
+  vertical-align: middle;
+}
+.posts-table tr:last-child td { border-bottom: none; }
+.post-title-cell { font-weight: 600; max-width: 260px; }
+.post-title-cell span.excerpt-preview {
+  display: block;
+  font-weight: 400;
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 260px;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.status-badge.published { background: var(--success-soft); color: var(--success); }
+.status-badge.draft { background: var(--draft-soft); color: var(--draft); }
+
+.row-actions { display: flex; gap: 8px; }
+.icon-btn {
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink-soft);
+  transition: border-color var(--transition), color var(--transition), background var(--transition);
+}
+.icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+.icon-btn.danger:hover { border-color: var(--danger); color: var(--danger); background: var(--danger-soft); }
+
+/* ---------- Mobile post cards ---------- */
+.posts-card-list { display: none; flex-direction: column; gap: 14px; }
+.post-mobile-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  background: var(--surface);
+}
+.post-mobile-card .pmc-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+.post-mobile-card h4 { font-size: 16px; margin-bottom: 4px; }
+.post-mobile-card .pmc-meta { font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+.post-mobile-card .pmc-actions { display: flex; gap: 10px; }
+
+/* ---------- Create Blog layout ---------- */
+.editor-header { padding: 36px 0 8px; }
+.editor-header h1 { font-size: 28px; }
+
+.editor-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 32px;
+  padding: 28px 0 72px;
+  align-items: start;
+}
+
+.editor-main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.title-input {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 600;
+  padding: 8px 0 16px;
+  color: var(--ink);
+}
+.title-input:focus { outline: none; border-color: var(--accent); }
+.title-input::placeholder { color: var(--border-strong); }
+
+.excerpt-input {
+  width: 100%;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  background: var(--surface);
+  font-size: 14.5px;
+  color: var(--ink-soft);
+  resize: vertical;
+  min-height: 56px;
+}
+.excerpt-input:focus { outline: none; border-color: var(--accent); }
+
+.editor-toolbar {
+  display: flex;
+  gap: 4px;
+  border: 1px solid var(--border);
+  border-bottom: none;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  padding: 8px;
+  background: var(--bg);
+}
+.editor-toolbar button {
+  width: 34px; height: 34px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink-soft);
+  font-size: 14px;
+  font-weight: 700;
+  transition: background var(--transition), color var(--transition);
+}
+.editor-toolbar button:hover { background: var(--surface); color: var(--accent); border-color: var(--border-strong); }
+
+.content-textarea {
+  width: 100%;
+  min-height: 380px;
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  padding: 18px;
+  font-size: 15.5px;
+  line-height: 1.75;
+  color: var(--ink);
+  resize: vertical;
+  background: var(--surface);
+}
+.content-textarea:focus { outline: none; border-color: var(--accent); }
+
+.editor-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.sidebar-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  background: var(--surface);
+}
+.sidebar-card h4 {
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+.sidebar-field { margin-bottom: 14px; }
+.sidebar-field:last-child { margin-bottom: 0; }
+.sidebar-field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  margin-bottom: 6px;
+}
+.sidebar-field input, .sidebar-field select {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 14px;
+}
+.sidebar-field input:focus, .sidebar-field select:focus { outline: none; border-color: var(--accent); background: var(--surface); }
+
+.image-preview {
+  width: 100%;
+  height: 140px;
+  border-radius: var(--radius-sm);
+  border: 1px dashed var(--border-strong);
+  margin-bottom: 12px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  font-size: 13px;
+  background: var(--bg);
+}
+.image-preview img { width: 100%; height: 100%; object-fit: cover; }
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 12.5px;
+  font-weight: 500;
+}
+.tag-chip button {
+  background: none; border: none; color: var(--accent);
+  font-size: 13px; line-height: 1; padding: 0;
+}
+
+.publish-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1024px) {
+  .editor-layout { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 860px) {
+  .posts-table-wrap { display: none; }
+  .posts-card-list { display: flex; }
+}
+
+@media (max-width: 640px) {
+  .stats-grid { grid-template-columns: 1fr 1fr; gap: 14px; }
+  .stat-card { padding: 16px; }
+  .stat-card .stat-value { font-size: 24px; }
+  .title-input { font-size: 24px; }
+  .dash-toolbar { flex-direction: column; align-items: stretch; }
+  .dash-toolbar .btn { width: 100%; }
+}
