@@ -78,7 +78,7 @@ const api = {
   blogs: {
     list: (params) => apiRequest(`/blogs${buildQueryString(params)}`, { auth: false }),
     mine: (params) => apiRequest(`/blogs${buildQueryString({ ...params, mine: 'true' })}`),
-    get: (id) => apiRequest(`/blogs/${id}`, { auth: false }),
+    get: (id, { trackView } = {}) => apiRequest(`/blogs/${id}${trackView ? '?view=true' : ''}`, { auth: false }),
     create: (data) => apiRequest('/blogs', { method: 'POST', body: data }),
     update: (id, data) => apiRequest(`/blogs/${id}`, { method: 'PUT', body: data }),
     remove: (id) => apiRequest(`/blogs/${id}`, { method: 'DELETE' })

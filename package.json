@@ -1,0 +1,11 @@
+{
+  "name": "blog-application",
+  "version": "1.0.0",
+  "description": "Papertrail full-stack blog application",
+  "type": "module",
+  "scripts": {
+    "start": "node serve-frontend.js",
+    "frontend": "node serve-frontend.js",
+    "backend": "node backend/src/server.js"
+  }
+}

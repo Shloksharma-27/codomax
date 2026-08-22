@@ -34,7 +34,9 @@ export const getBlogs = asyncHandler(async (req, res) => {
   }
 
   if (search && search.trim()) {
-    filter.$text = { $search: search.trim() };
+    const escaped = search.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(escaped, 'i');
+    filter.$or = [{ title: regex }, { excerpt: regex }, { content: regex }];
   }
 
   const pageNum = Math.max(1, parseInt(page, 10) || 1);
@@ -71,6 +73,11 @@ export const getBlogById = asyncHandler(async (req, res) => {
 
   if (!blog) {
     throw new AppError('Post not found.', 404);
+  }
+
+  if (req.query.view === 'true') {
+    blog.views = (blog.views || 0) + 1;
+    await blog.save();
   }
 
   res.status(200).json({

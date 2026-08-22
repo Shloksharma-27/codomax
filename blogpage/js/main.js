@@ -240,13 +240,13 @@ function renderFeatured(featured, featuredWrap) {
   if (!container) return;
   if (featuredWrap) featuredWrap.classList.remove('hidden');
   container.innerHTML = `
-    <div class="featured-media">
+    <a href="post.html?id=${encodeURIComponent(featured.id)}" class="featured-media" aria-label="Read ${escapeHtml(featured.title)}">
       <img src="${escapeHtml(featured.image)}" alt="${escapeHtml(featured.title)}" loading="lazy"
         onerror="handleImageError(this, 'Papertrail')">
-    </div>
+    </a>
     <div class="featured-body">
       <span class="category-tag">${escapeHtml(featured.category)}</span>
-      <h3>${escapeHtml(featured.title)}</h3>
+      <h3><a href="post.html?id=${encodeURIComponent(featured.id)}">${escapeHtml(featured.title)}</a></h3>
       <p>${escapeHtml(featured.excerpt)}</p>
       <div class="meta-row">
         <span>${escapeHtml(featured.author)}</span>
@@ -289,13 +289,13 @@ function renderBlogGrid(posts, grid, emptyState) {
 
   grid.innerHTML = posts.map(post => `
     <article class="blog-card">
-      <a href="index.html" class="blog-card-media" tabindex="-1">
+      <a href="post.html?id=${encodeURIComponent(post.id)}" class="blog-card-media" aria-label="Read ${escapeHtml(post.title)}">
         <img src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}" loading="lazy"
           onerror="handleImageError(this, '${escapeHtml(post.category)}')">
       </a>
       <div class="blog-card-body">
         <span class="category-tag">${escapeHtml(post.category)}</span>
-        <h3>${escapeHtml(post.title)}</h3>
+        <h3><a href="post.html?id=${encodeURIComponent(post.id)}">${escapeHtml(post.title)}</a></h3>
         <p>${escapeHtml(post.excerpt)}</p>
         <div class="meta-row">
           <span>${escapeHtml(post.author)}</span>

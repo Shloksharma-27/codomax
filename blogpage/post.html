@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Papertrail — Story</title>
+<meta name="description" content="Read the full story on Papertrail.">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body id="post-page">
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="brand">Papertrail<span class="dot">.</span></a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="index.html" data-page="index.html">Home</a>
+      <a href="index.html#latest-articles">Explore</a>
+      <a href="dashboard.html" data-page="dashboard.html">Dashboard</a>
+      <a href="create-blog.html" data-page="create-blog.html">Create Blog</a>
+    </nav>
+    <div class="nav-actions" id="nav-actions-desktop"></div>
+    <button class="hamburger" id="hamburger-btn" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="mobile-menu" id="mobile-menu"></div>
+</header>
+
+<main>
+  <div class="container post-container">
+    <a href="index.html" class="back-link">&larr; Back to all stories</a>
+
+    <div id="post-status" class="feed-status">Loading story…</div>
+
+    <article id="post-article" class="post-article hidden">
+      <span class="category-tag" id="post-category"></span>
+      <h1 id="post-title"></h1>
+      <div class="meta-row post-meta">
+        <span id="post-author"></span>
+        <span class="sep">&middot;</span>
+        <span id="post-date"></span>
+        <span class="sep">&middot;</span>
+        <span id="post-reading-time"></span>
+        <span class="sep">&middot;</span>
+        <span id="post-views"></span>
+      </div>
+      <div class="post-media" id="post-media"></div>
+      <div class="post-body" id="post-body"></div>
+      <div class="post-tags" id="post-tags"></div>
+    </article>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="brand">Papertrail<span class="dot">.</span></a>
+        <p>A small blog about design, technology, and the work habits behind them. Written and maintained by its own readers.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigate</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="index.html#latest-articles">Explore</a></li>
+          <li><a href="login.html">Login</a></li>
+          <li><a href="register.html">Register</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Categories</h4>
+        <ul>
+          <li><a href="index.html#latest-articles">Technology</a></li>
+          <li><a href="index.html#latest-articles">Design</a></li>
+          <li><a href="index.html#latest-articles">Productivity</a></li>
+          <li><a href="index.html#latest-articles">Career</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Papertrail. All rights reserved.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/api.js"></script>
+<script src="js/data.js"></script>
+<script src="js/main.js"></script>
+<script src="js/post.js"></script>
+</body>
+</html>

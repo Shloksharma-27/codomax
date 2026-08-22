@@ -23,8 +23,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     setFormDisabled(true);
     try {
       const res = await api.blogs.get(editId);
-      editingPostId = res.data.blog.id;
-      populateForm(res.data.blog);
+      const post = res.data.blog;
+      const currentUser = getCurrentUser();
+      if (currentUser && post.authorId && post.authorId !== currentUser.id && post.author !== currentUser.id) {
+        showToast('You can only edit your own posts.', 'error');
+        setTimeout(() => { window.location.href = 'dashboard.html'; }, 500);
+        return;
+      }
+      editingPostId = post.id;
+      populateForm(post);
     } catch (err) {
       showToast(err.message || 'Could not load this post.', 'error');
       window.location.href = 'dashboard.html';
