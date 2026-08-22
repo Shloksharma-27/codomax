@@ -60,7 +60,10 @@ function showToast(message, type = 'default') {
 /* ---------- Auth guard ---------- */
 function redirectIfNotAuthenticated() {
   if (!isAuthenticated()) {
-    window.location.href = 'login.html';
+    const page = window.location.pathname.split('/').pop() || 'index.html';
+    const query = window.location.search || '';
+    const destination = encodeURIComponent(page + query);
+    window.location.href = `login.html?redirect=${destination}`;
     return false;
   }
   return true;
@@ -82,6 +85,10 @@ function renderNav() {
           ${escapeHtml(user.name.split(' ')[0])}
         </button>
         <div class="nav-dropdown-menu" id="user-menu">
+          <div class="nav-user-header" style="padding: 8px 12px; border-bottom: 1px solid var(--border); margin-bottom: 4px;">
+            <strong style="display: block; font-size: 13.5px; color: var(--ink);">${escapeHtml(user.name)}</strong>
+            <span style="display: block; font-size: 12px; color: var(--muted);">${escapeHtml(user.email || '')}</span>
+          </div>
           <a href="dashboard.html">Dashboard</a>
           <a href="create-blog.html">Create Blog</a>
           <button id="logout-btn" type="button">Logout</button>
@@ -89,6 +96,10 @@ function renderNav() {
       </div>
     `;
     mobileMenu.innerHTML = `
+      <div style="padding: 8px 4px 12px; border-bottom: 1px solid var(--border);">
+        <strong style="display: block; font-size: 14px; color: var(--ink);">${escapeHtml(user.name)}</strong>
+        <span style="font-size: 12px; color: var(--muted);">${escapeHtml(user.email || '')}</span>
+      </div>
       <a href="index.html">Home</a>
       <a href="index.html#latest-articles">Explore</a>
       <a href="dashboard.html">Dashboard</a>

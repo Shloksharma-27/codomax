@@ -6,6 +6,16 @@
 <title>Create Blog — Papertrail</title>
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/dashboard.css">
+<script>
+  (function() {
+    var token = localStorage.getItem('papertrail_token');
+    var user = localStorage.getItem('papertrail_current_user');
+    if (!token || !user) {
+      var dest = encodeURIComponent(window.location.pathname.split('/').pop() + (window.location.search || ''));
+      window.location.replace('login.html?redirect=' + dest);
+    }
+  })();
+</script>
 </head>
 <body id="create-blog-page">
 

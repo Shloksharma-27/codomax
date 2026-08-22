@@ -62,6 +62,12 @@ async function apiRequest(endpoint, { method = 'GET', body, auth = true } = {}) 
     const message = (payload && payload.message) || 'Something went wrong. Please try again.';
     const error = new Error(message);
     error.status = response.status;
+
+    if (response.status === 401 && auth) {
+      clearToken();
+      localStorage.removeItem('papertrail_current_user');
+    }
+
     throw error;
   }
 
@@ -73,7 +79,8 @@ const api = {
     register: (name, email, password) =>
       apiRequest('/auth/register', { method: 'POST', body: { name, email, password }, auth: false }),
     login: (email, password) =>
-      apiRequest('/auth/login', { method: 'POST', body: { email, password }, auth: false })
+      apiRequest('/auth/login', { method: 'POST', body: { email, password }, auth: false }),
+    me: () => apiRequest('/auth/me')
   },
   blogs: {
     list: (params) => apiRequest(`/blogs${buildQueryString(params)}`, { auth: false }),

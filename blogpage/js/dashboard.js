@@ -17,7 +17,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function renderDashboardHeader(user) {
   const greeting = document.getElementById('dash-greeting');
-  if (greeting) greeting.textContent = `Good to see you, ${user.name.split(' ')[0]}`;
+  const emailEl = document.getElementById('dash-email');
+  if (greeting && user) {
+    greeting.textContent = `Good to see you, ${user.name.split(' ')[0]}`;
+  }
+  if (emailEl && user) {
+    emailEl.textContent = `${user.email} • Author Account`;
+  }
 }
 
 async function loadDashboard() {

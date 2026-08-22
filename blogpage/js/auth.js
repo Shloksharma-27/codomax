@@ -74,17 +74,28 @@ function initLoginForm() {
     if (!valid) return;
 
     const submitBtn = form.querySelector('button[type="submit"]');
-    if (submitBtn) submitBtn.disabled = true;
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Logging in…';
+    }
 
     try {
       const res = await api.auth.login(email, password);
       setCurrentUser(res.data.user, res.data.token);
-      showBanner(banner, 'Login successful. Redirecting to your dashboard...', 'success');
-      setTimeout(() => { window.location.href = 'dashboard.html'; }, 700);
+      showBanner(banner, 'Login successful. Redirecting…', 'success');
+
+      const params = new URLSearchParams(window.location.search);
+      const redirectTarget = params.get('redirect');
+      const destination = redirectTarget ? decodeURIComponent(redirectTarget) : 'dashboard.html';
+
+      setTimeout(() => { window.location.href = destination; }, 600);
     } catch (err) {
       showBanner(banner, err.message || 'Incorrect email or password. Try again.', 'error');
     } finally {
-      if (submitBtn) submitBtn.disabled = false;
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Login';
+      }
     }
   });
 }
@@ -159,11 +170,14 @@ function initRegisterForm() {
     if (!valid) return;
 
     const submitBtn = form.querySelector('button[type="submit"]');
-    if (submitBtn) submitBtn.disabled = true;
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Creating account…';
+    }
 
     try {
       await api.auth.register(name, email, password);
-      showBanner(banner, 'Account created. Redirecting to login...', 'success');
+      showBanner(banner, 'Account created! Redirecting to login…', 'success');
       form.reset();
       setTimeout(() => { window.location.href = 'login.html'; }, 900);
     } catch (err) {
@@ -173,7 +187,10 @@ function initRegisterForm() {
         showBanner(banner, err.message || 'Could not create your account. Please try again.', 'error');
       }
     } finally {
-      if (submitBtn) submitBtn.disabled = false;
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Create Account';
+      }
     }
   });
 }
