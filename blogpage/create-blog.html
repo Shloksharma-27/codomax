@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Create Blog — Papertrail</title>
+<title>Write a Story — Papertrail</title>
+<meta name="description" content="Write and publish modern stories, tutorials, and insights on Papertrail.">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/dashboard.css">
 <script>
@@ -11,7 +12,8 @@
     var token = localStorage.getItem('papertrail_token');
     var user = localStorage.getItem('papertrail_current_user');
     if (!token || !user) {
-      var dest = encodeURIComponent(window.location.pathname.split('/').pop() + (window.location.search || ''));
+      var page = window.location.pathname.split('/').pop() || 'create-blog.html';
+      var dest = encodeURIComponent(page + (window.location.search || ''));
       window.location.replace('login.html?redirect=' + dest);
     }
   })();
@@ -29,10 +31,11 @@
       <a href="create-blog.html" data-page="create-blog.html">Create Blog</a>
     </nav>
     <div class="nav-actions" id="nav-actions-desktop"></div>
-    <button class="hamburger" id="hamburger-btn" aria-label="Toggle menu" aria-expanded="false">
+    <button class="hamburger" id="hamburger-btn" aria-label="Toggle navigation menu" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
   </div>
+  <div class="mobile-menu-backdrop" id="mobile-menu-backdrop"></div>
   <div class="mobile-menu" id="mobile-menu"></div>
 </header>
 
@@ -40,47 +43,69 @@
   <div class="container">
     <div class="editor-header">
       <h1 id="editor-title-heading">Write a new story</h1>
+      <div class="editor-header-meta">
+        <span id="word-count-badge">0 words</span>
+        <span>&middot;</span>
+        <span id="reading-time-badge">1 min read</span>
+      </div>
     </div>
 
     <div class="editor-layout">
       <div class="editor-main">
         <div>
-          <input type="text" class="title-input" id="title-input" placeholder="Story title">
+          <input type="text" class="title-input" id="title-input" placeholder="Title of your story..." aria-label="Story title" required>
           <span class="field-error" id="title-error"></span>
         </div>
 
         <div>
-          <textarea class="excerpt-input" id="excerpt-input" placeholder="Short excerpt — a sentence or two that summarizes the story"></textarea>
+          <textarea class="excerpt-input" id="excerpt-input" placeholder="Short excerpt — a brief summary for the preview card (optional, defaults to first sentences)" aria-label="Story excerpt"></textarea>
         </div>
 
         <div>
-          <div class="editor-toolbar" id="editor-toolbar">
-            <button type="button" data-format="bold" title="Bold" aria-label="Bold"><b>B</b></button>
-            <button type="button" data-format="italic" title="Italic" aria-label="Italic"><i>I</i></button>
-            <button type="button" data-format="heading" title="Heading" aria-label="Heading">H</button>
-            <button type="button" data-format="quote" title="Quote" aria-label="Quote">&ldquo;</button>
-            <button type="button" data-format="list" title="List" aria-label="List">&#8226;</button>
+          <div class="editor-controls-bar">
+            <div class="editor-toolbar" id="editor-toolbar">
+              <button type="button" data-format="bold" title="Bold (**text**)" aria-label="Bold"><b>B</b></button>
+              <button type="button" data-format="italic" title="Italic (_text_)" aria-label="Italic"><i>I</i></button>
+              <button type="button" data-format="heading" title="Heading (## Heading)" aria-label="Heading">H2</button>
+              <button type="button" data-format="quote" title="Quote (> Quote)" aria-label="Quote">&ldquo;</button>
+              <button type="button" data-format="list" title="Bullet List (- item)" aria-label="Bullet list">&#8226;</button>
+              <button type="button" data-format="numlist" title="Numbered List (1. item)" aria-label="Numbered list">1.</button>
+              <button type="button" data-format="code" title="Code Block (```code```)" aria-label="Code">&lt;&gt;</button>
+              <button type="button" data-format="link" title="Link ([text](url))" aria-label="Link">&#128279;</button>
+            </div>
+            <div class="editor-view-toggle">
+              <button type="button" id="tab-write-btn" class="active">Write</button>
+              <button type="button" id="tab-preview-btn">Preview</button>
+            </div>
           </div>
-          <textarea class="content-textarea" id="content-textarea" placeholder="Write your story here..."></textarea>
+
+          <textarea class="content-textarea" id="content-textarea" placeholder="Tell your story... You can use Markdown formatting like **bold**, _italic_, # Headings, - lists, `code`, and > quotes." aria-label="Story content" required></textarea>
+          <div class="content-preview-pane post-body" id="content-preview-pane"></div>
           <span class="field-error" id="content-error"></span>
         </div>
       </div>
 
-      <div class="editor-sidebar">
+      <aside class="editor-sidebar">
         <div class="sidebar-card">
           <h4>Featured Image</h4>
-          <div class="image-preview" id="image-preview">No image yet</div>
+          <div class="image-preview" id="image-preview">
+            <span>No image preview</span>
+          </div>
           <div class="sidebar-field">
             <label for="image-input">Image URL</label>
-            <input type="text" id="image-input" placeholder="https://images.unsplash.com/...">
+            <input type="url" id="image-input" placeholder="https://images.unsplash.com/...">
+          </div>
+          <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px;">
+            <button type="button" class="btn btn-secondary btn-sm" style="font-size: 11.5px; padding: 4px 8px;" id="sample-img-tech">Tech Sample</button>
+            <button type="button" class="btn btn-secondary btn-sm" style="font-size: 11.5px; padding: 4px 8px;" id="sample-img-design">Design Sample</button>
           </div>
         </div>
 
         <div class="sidebar-card">
-          <h4>Organize</h4>
+          <h4>Organization</h4>
           <div class="sidebar-field">
             <label for="category-select">Category</label>
-            <select id="category-select">
+            <select id="category-select" required>
               <option value="">Select a category</option>
               <option value="Technology">Technology</option>
               <option value="Design">Design</option>
@@ -90,25 +115,31 @@
             </select>
             <span class="field-error" id="category-error"></span>
           </div>
+
           <div class="sidebar-field">
             <label for="tag-input">Tags</label>
-            <input type="text" id="tag-input" placeholder="Type a tag and press Enter">
+            <input type="text" id="tag-input" placeholder="Type tag & press Enter">
             <div class="tag-list" id="tag-list"></div>
           </div>
         </div>
 
         <div class="sidebar-card">
-          <h4>Publish</h4>
+          <h4>Publishing</h4>
           <div class="publish-actions">
-            <button type="button" class="btn btn-primary btn-block" id="publish-btn">Publish</button>
-            <button type="button" class="btn btn-secondary btn-block" id="save-draft-btn">Save Draft</button>
+            <button type="button" class="btn btn-primary btn-block" id="publish-btn">
+              <span class="btn-text">Publish Story</span>
+            </button>
+            <button type="button" class="btn btn-secondary btn-block" id="save-draft-btn">
+              <span class="btn-text">Save as Draft</span>
+            </button>
           </div>
         </div>
-      </div>
+      </aside>
     </div>
   </div>
 </main>
 
+<script src="config.js"></script>
 <script src="js/api.js"></script>
 <script src="js/data.js"></script>
 <script src="js/main.js"></script>

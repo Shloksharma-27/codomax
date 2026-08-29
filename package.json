@@ -6,6 +6,10 @@
   "scripts": {
     "start": "node serve-frontend.js",
     "frontend": "node serve-frontend.js",
-    "backend": "node backend/src/server.js"
+    "backend": "node backend/src/server.js",
+    "test": "node test_crud_integration.mjs && node test_auth_dashboard.mjs"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

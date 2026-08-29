@@ -1,28 +1,43 @@
 /* ============================================
    Papertrail — data.js
-   Session helpers only. Posts and user accounts now live in
-   MongoDB behind the Express API (see js/api.js); this file just
-   tracks who is currently signed in, in the browser.
+   Session storage helpers for current browser session.
+   Posts and users reside in MongoDB behind Express API.
    ============================================ */
 
 const SESSION_KEY = 'papertrail_current_user';
 
 function getCurrentUser() {
   try {
-    return JSON.parse(localStorage.getItem(SESSION_KEY));
+    const raw = localStorage.getItem(SESSION_KEY);
+    return raw ? JSON.parse(raw) : null;
   } catch (e) {
     return null;
   }
 }
 
 function setCurrentUser(user, token) {
-  localStorage.setItem(SESSION_KEY, JSON.stringify({ id: user.id, name: user.name, email: user.email }));
-  if (token) setToken(token);
+  try {
+    if (user) {
+      localStorage.setItem(
+        SESSION_KEY,
+        JSON.stringify({ id: user.id || user._id, name: user.name, email: user.email })
+      );
+    }
+    if (token) {
+      setToken(token);
+    }
+  } catch (e) {
+    console.error('Could not save user session', e);
+  }
 }
 
 function clearCurrentUser() {
-  localStorage.removeItem(SESSION_KEY);
-  clearToken();
+  try {
+    localStorage.removeItem(SESSION_KEY);
+    clearToken();
+  } catch (e) {
+    console.error('Could not clear user session', e);
+  }
 }
 
 function isAuthenticated() {

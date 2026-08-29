@@ -1,22 +1,44 @@
 /* ============================================
    Papertrail — api.js
-   Thin service layer around the Express backend.
-   Every network call the frontend makes goes through here.
+   Service layer around the Express backend API.
    ============================================ */
 
-const API_BASE_URL = 'http://localhost:5000/api';
+function getApiBaseUrl() {
+  if (typeof window !== 'undefined' && window.PAPERTRAIL_CONFIG?.API_BASE_URL) {
+    return window.PAPERTRAIL_CONFIG.API_BASE_URL.replace(/\/+$/, '');
+  }
+  const isLocal =
+    typeof window !== 'undefined' &&
+    (window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1' ||
+      window.location.hostname === '');
+  return isLocal ? 'http://localhost:5000/api' : 'http://localhost:5000/api';
+}
+
 const TOKEN_KEY = 'papertrail_token';
 
 function getToken() {
-  return localStorage.getItem(TOKEN_KEY);
+  try {
+    return localStorage.getItem(TOKEN_KEY);
+  } catch (e) {
+    return null;
+  }
 }
 
 function setToken(token) {
-  localStorage.setItem(TOKEN_KEY, token);
+  try {
+    localStorage.setItem(TOKEN_KEY, token);
+  } catch (e) {
+    console.error('Could not save auth token to localStorage', e);
+  }
 }
 
 function clearToken() {
-  localStorage.removeItem(TOKEN_KEY);
+  try {
+    localStorage.removeItem(TOKEN_KEY);
+  } catch (e) {
+    console.error('Could not clear auth token from localStorage', e);
+  }
 }
 
 function buildQueryString(params) {
@@ -38,15 +60,18 @@ async function apiRequest(endpoint, { method = 'GET', body, auth = true } = {}) 
     headers.Authorization = `Bearer ${token}`;
   }
 
+  const baseUrl = getApiBaseUrl();
+  const url = `${baseUrl}${endpoint}`;
+
   let response;
   try {
-    response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    response = await fetch(url, {
       method,
       headers,
       body: body !== undefined ? JSON.stringify(body) : undefined
     });
   } catch (networkError) {
-    const error = new Error('Could not reach the server. Check your connection and try again.');
+    const error = new Error('Could not reach the server. Please check your internet connection or try again later.');
     error.status = 0;
     throw error;
   }
@@ -62,10 +87,15 @@ async function apiRequest(endpoint, { method = 'GET', body, auth = true } = {}) 
     const message = (payload && payload.message) || 'Something went wrong. Please try again.';
     const error = new Error(message);
     error.status = response.status;
+    error.data = payload;
 
     if (response.status === 401 && auth) {
       clearToken();
-      localStorage.removeItem('papertrail_current_user');
+      try {
+        localStorage.removeItem('papertrail_current_user');
+      } catch (e) {
+        // ignore
+      }
     }
 
     throw error;

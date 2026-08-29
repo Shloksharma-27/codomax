@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard — Papertrail</title>
+<title>Author Dashboard — Papertrail</title>
+<meta name="description" content="Manage your Papertrail articles, view reader engagement stats, and manage drafts.">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/dashboard.css">
 <script>
@@ -11,7 +12,8 @@
     var token = localStorage.getItem('papertrail_token');
     var user = localStorage.getItem('papertrail_current_user');
     if (!token || !user) {
-      var dest = encodeURIComponent(window.location.pathname.split('/').pop() + (window.location.search || ''));
+      var page = window.location.pathname.split('/').pop() || 'dashboard.html';
+      var dest = encodeURIComponent(page + (window.location.search || ''));
       window.location.replace('login.html?redirect=' + dest);
     }
   })();
@@ -29,83 +31,101 @@
       <a href="create-blog.html" data-page="create-blog.html">Create Blog</a>
     </nav>
     <div class="nav-actions" id="nav-actions-desktop"></div>
-    <button class="hamburger" id="hamburger-btn" aria-label="Toggle menu" aria-expanded="false">
+    <button class="hamburger" id="hamburger-btn" aria-label="Toggle navigation menu" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
   </div>
+  <div class="mobile-menu-backdrop" id="mobile-menu-backdrop"></div>
   <div class="mobile-menu" id="mobile-menu"></div>
 </header>
 
 <main>
   <div class="container">
     <div class="dash-header">
-      <h1 id="dash-greeting">Good to see you</h1>
-      <p id="dash-email" style="color: var(--muted); font-size: 14.5px; margin-top: 4px;"></p>
+      <h1 id="dash-greeting">Author Dashboard</h1>
+      <p id="dash-email"></p>
     </div>
 
+    <!-- Engagement & Story Stats -->
     <div class="stats-grid">
       <div class="stat-card">
-        <div class="stat-label">Total Posts</div>
+        <div class="stat-label">Total Stories</div>
         <div class="stat-value" id="stat-total">0</div>
       </div>
       <div class="stat-card">
         <div class="stat-label">Published</div>
-        <div class="stat-value" id="stat-published">0</div>
+        <div class="stat-value" id="stat-published" style="color: var(--success);">0</div>
       </div>
       <div class="stat-card">
         <div class="stat-label">Drafts</div>
-        <div class="stat-value" id="stat-drafts">0</div>
+        <div class="stat-value" id="stat-drafts" style="color: var(--draft);">0</div>
       </div>
       <div class="stat-card">
         <div class="stat-label">Total Views</div>
-        <div class="stat-value" id="stat-views">0</div>
+        <div class="stat-value" id="stat-views" style="color: var(--accent);">0</div>
       </div>
     </div>
 
+    <!-- Dashboard Toolbar & Filters -->
     <div class="dash-toolbar">
-      <h2>My Posts</h2>
-      <a href="create-blog.html" class="btn btn-primary btn-sm">Create Blog</a>
+      <div class="dash-toolbar-left">
+        <h2>My Stories</h2>
+        <div class="dash-filter-tabs" id="dash-filter-tabs">
+          <button type="button" class="dash-filter-tab active" data-status-filter="all">All</button>
+          <button type="button" class="dash-filter-tab" data-status-filter="published">Published</button>
+          <button type="button" class="dash-filter-tab" data-status-filter="draft">Drafts</button>
+        </div>
+      </div>
+      <a href="create-blog.html" class="btn btn-primary btn-sm">+ Write a Story</a>
     </div>
 
+    <!-- Desktop Table View -->
     <div class="posts-table-wrap">
       <table class="posts-table">
         <thead>
           <tr>
-            <th>Title</th>
+            <th>Story Title</th>
             <th>Category</th>
             <th>Status</th>
-            <th>Date</th>
+            <th>Published / Saved</th>
             <th>Views</th>
-            <th>Actions</th>
+            <th style="text-align: right;">Actions</th>
           </tr>
         </thead>
-        <tbody id="posts-table-body"></tbody>
+        <tbody id="posts-table-body">
+          <tr><td colspan="6" style="text-align: center; padding: 40px; color: var(--muted);">Loading your stories…</td></tr>
+        </tbody>
       </table>
     </div>
 
+    <!-- Mobile Stacked Card View -->
     <div class="posts-card-list" id="posts-card-list"></div>
 
-    <div class="empty-state hidden" id="dash-empty-state" style="margin: 24px 0 60px;">
-      <h3>No stories yet</h3>
-      <p>Start writing your first article and share your ideas.</p>
-      <a href="create-blog.html" class="btn btn-primary">Create Your First Blog</a>
+    <!-- Empty State -->
+    <div class="empty-state hidden" id="dash-empty-state" style="margin: 28px 0 60px;">
+      <svg class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+      <h3 id="dash-empty-title">No stories yet</h3>
+      <p id="dash-empty-desc">Share your insights, tutorials, or engineering perspectives with our reader community.</p>
+      <a href="create-blog.html" class="btn btn-primary">Create Your First Story</a>
     </div>
 
     <div style="height: 60px;"></div>
   </div>
 </main>
 
+<!-- Delete Confirmation Modal -->
 <div class="modal-overlay" id="delete-modal">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title">
     <h3 id="delete-modal-title">Delete this story?</h3>
-    <p>This action cannot be undone.</p>
+    <p>This action is permanent and cannot be undone. All associated views and content will be removed.</p>
     <div class="modal-actions">
       <button type="button" class="btn btn-secondary" id="delete-cancel">Cancel</button>
-      <button type="button" class="btn btn-danger" id="delete-confirm">Delete</button>
+      <button type="button" class="btn btn-danger" id="delete-confirm">Delete Story</button>
     </div>
   </div>
 </div>
 
+<script src="config.js"></script>
 <script src="js/api.js"></script>
 <script src="js/data.js"></script>
 <script src="js/main.js"></script>

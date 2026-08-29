@@ -1,9 +1,10 @@
 /* ============================================
    Papertrail — dashboard.js
-   Stats, post list, edit/delete handling. Backed by the API.
+   Stats, post management, filter tabs, delete modal.
    ============================================ */
 
 let dashboardPosts = [];
+let currentFilter = 'all';
 
 document.addEventListener('DOMContentLoaded', () => {
   if (!document.getElementById('dashboard-page')) return;
@@ -11,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const user = getCurrentUser();
   renderDashboardHeader(user);
+  initFilterTabs();
   loadDashboard();
   initDeleteModal();
 });
@@ -19,16 +21,30 @@ function renderDashboardHeader(user) {
   const greeting = document.getElementById('dash-greeting');
   const emailEl = document.getElementById('dash-email');
   if (greeting && user) {
-    greeting.textContent = `Good to see you, ${user.name.split(' ')[0]}`;
+    greeting.textContent = `Welcome back, ${user.name.split(' ')[0]}`;
   }
   if (emailEl && user) {
     emailEl.textContent = `${user.email} • Author Account`;
   }
 }
 
+function initFilterTabs() {
+  const tabs = document.querySelectorAll('[data-status-filter]');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      currentFilter = tab.getAttribute('data-status-filter');
+      applyFilterAndRender();
+    });
+  });
+}
+
 async function loadDashboard() {
   const tableBody = document.getElementById('posts-table-body');
-  if (tableBody) tableBody.innerHTML = `<tr><td colspan="6">Loading your posts…</td></tr>`;
+  if (tableBody) {
+    tableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 40px; color: var(--muted);">Loading your stories…</td></tr>`;
+  }
 
   try {
     const [statsRes, postsRes] = await Promise.all([
@@ -37,8 +53,8 @@ async function loadDashboard() {
     ]);
 
     applyStats(statsRes.data);
-    dashboardPosts = postsRes.data.blogs;
-    renderPosts(dashboardPosts);
+    dashboardPosts = postsRes.data.blogs || [];
+    applyFilterAndRender();
   } catch (err) {
     if (err.status === 401) {
       clearCurrentUser();
@@ -46,14 +62,16 @@ async function loadDashboard() {
       return;
     }
     showToast(err.message || 'Could not load your dashboard.', 'error');
-    if (tableBody) tableBody.innerHTML = `<tr><td colspan="6">Could not load your posts. ${escapeHtml(err.message || '')}</td></tr>`;
+    if (tableBody) {
+      tableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 40px; color: var(--danger);">Could not load your stories: ${escapeHtml(err.message || '')}</td></tr>`;
+    }
   }
 }
 
 function applyStats(stats) {
-  setStat('stat-total', stats.totalPosts);
-  setStat('stat-published', stats.publishedPosts);
-  setStat('stat-drafts', stats.draftPosts);
+  setStat('stat-total', stats.totalPosts || 0);
+  setStat('stat-published', stats.publishedPosts || 0);
+  setStat('stat-drafts', stats.draftPosts || 0);
   setStat('stat-views', (stats.totalViews || 0).toLocaleString());
 }
 
@@ -62,41 +80,70 @@ function setStat(id, value) {
   if (el) el.textContent = value;
 }
 
+function applyFilterAndRender() {
+  let filtered = dashboardPosts;
+  if (currentFilter === 'published') {
+    filtered = dashboardPosts.filter(p => p.status === 'published');
+  } else if (currentFilter === 'draft') {
+    filtered = dashboardPosts.filter(p => p.status === 'draft');
+  }
+  renderPosts(filtered);
+}
+
 function renderPosts(posts) {
   const tableBody = document.getElementById('posts-table-body');
   const cardList = document.getElementById('posts-card-list');
   const emptyState = document.getElementById('dash-empty-state');
   const tableWrap = document.querySelector('.posts-table-wrap');
-  const toolbar = document.querySelector('.dash-toolbar');
 
-  if (posts.length === 0) {
+  if (!posts || posts.length === 0) {
     if (tableWrap) tableWrap.classList.add('hidden');
     if (cardList) cardList.classList.add('hidden');
-    if (toolbar) toolbar.classList.add('hidden');
-    if (emptyState) emptyState.classList.remove('hidden');
+    if (emptyState) {
+      emptyState.classList.remove('hidden');
+      const emptyTitle = document.getElementById('dash-empty-title');
+      const emptyDesc = document.getElementById('dash-empty-desc');
+      if (currentFilter === 'published') {
+        if (emptyTitle) emptyTitle.textContent = 'No published stories';
+        if (emptyDesc) emptyDesc.textContent = 'You have not published any stories yet.';
+      } else if (currentFilter === 'draft') {
+        if (emptyTitle) emptyTitle.textContent = 'No drafts saved';
+        if (emptyDesc) emptyDesc.textContent = 'You have no saved drafts.';
+      } else {
+        if (emptyTitle) emptyTitle.textContent = 'No stories yet';
+        if (emptyDesc) emptyDesc.textContent = 'Share your insights or engineering perspectives with our reader community.';
+      }
+    }
     return;
   }
 
   if (tableWrap) tableWrap.classList.remove('hidden');
   if (cardList) cardList.classList.remove('hidden');
-  if (toolbar) toolbar.classList.remove('hidden');
   if (emptyState) emptyState.classList.add('hidden');
 
   if (tableBody) {
     tableBody.innerHTML = posts.map(post => `
       <tr>
         <td class="post-title-cell">
-          ${escapeHtml(post.title)}
-          <span class="excerpt-preview">${escapeHtml(post.excerpt || '')}</span>
+          <a href="${post.status === 'published' ? `post.html?id=${encodeURIComponent(post.id)}` : `create-blog.html?id=${encodeURIComponent(post.id)}`}">
+            ${escapeHtml(post.title)}
+          </a>
+          <span class="excerpt-preview">${escapeHtml(post.excerpt || post.content.slice(0, 100))}</span>
         </td>
-        <td>${escapeHtml(post.category)}</td>
-        <td><span class="status-badge ${post.status}">${post.status === 'published' ? 'Published' : 'Draft'}</span></td>
-        <td>${formatDate(post.date)}</td>
-        <td>${(post.views || 0).toLocaleString()}</td>
+        <td><span class="category-tag">${escapeHtml(post.category)}</span></td>
         <td>
-          <div class="row-actions">
-            <a class="icon-btn" href="create-blog.html?id=${post.id}" aria-label="Edit ${escapeHtml(post.title)}" title="Edit">${editIcon()}</a>
-            <button class="icon-btn danger" type="button" data-delete-id="${post.id}" aria-label="Delete ${escapeHtml(post.title)}" title="Delete">${trashIcon()}</button>
+          <span class="status-badge ${post.status}">
+            <span style="width: 6px; height: 6px; border-radius: 50%; background: currentColor;"></span>
+            ${post.status === 'published' ? 'Published' : 'Draft'}
+          </span>
+        </td>
+        <td>${formatDate(post.date || post.createdAt)}</td>
+        <td><strong>${(post.views || 0).toLocaleString()}</strong></td>
+        <td style="text-align: right;">
+          <div class="row-actions" style="justify-content: flex-end;">
+            ${post.status === 'published' ? `<a class="icon-btn" href="post.html?id=${encodeURIComponent(post.id)}" aria-label="View story" title="View Story">${viewIcon()}</a>` : ''}
+            <a class="icon-btn" href="create-blog.html?id=${encodeURIComponent(post.id)}" aria-label="Edit story" title="Edit Story">${editIcon()}</a>
+            <button class="icon-btn danger" type="button" data-delete-id="${encodeURIComponent(post.id)}" aria-label="Delete story" title="Delete Story">${trashIcon()}</button>
           </div>
         </td>
       </tr>
@@ -109,13 +156,16 @@ function renderPosts(posts) {
         <div class="pmc-top">
           <div>
             <h4>${escapeHtml(post.title)}</h4>
-            <span class="status-badge ${post.status}">${post.status === 'published' ? 'Published' : 'Draft'}</span>
+            <span class="status-badge ${post.status}" style="margin-top: 6px;">
+              ${post.status === 'published' ? 'Published' : 'Draft'}
+            </span>
           </div>
         </div>
-        <p class="pmc-meta">${escapeHtml(post.category)} &middot; ${formatDate(post.date)} &middot; ${(post.views || 0).toLocaleString()} views</p>
+        <p class="pmc-meta">${escapeHtml(post.category)} &middot; ${formatDate(post.date || post.createdAt)} &middot; ${(post.views || 0).toLocaleString()} views</p>
         <div class="pmc-actions">
-          <a class="btn btn-secondary btn-sm" href="create-blog.html?id=${post.id}">Edit</a>
-          <button class="btn btn-secondary btn-sm" type="button" data-delete-id="${post.id}">Delete</button>
+          ${post.status === 'published' ? `<a class="btn btn-secondary btn-sm" href="post.html?id=${encodeURIComponent(post.id)}">View</a>` : ''}
+          <a class="btn btn-secondary btn-sm" href="create-blog.html?id=${encodeURIComponent(post.id)}">Edit</a>
+          <button class="btn btn-secondary btn-sm" type="button" data-delete-id="${encodeURIComponent(post.id)}" style="color: var(--danger);">Delete</button>
         </div>
       </div>
     `).join('');
@@ -126,48 +176,64 @@ function renderPosts(posts) {
   });
 }
 
+function viewIcon() {
+  return `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+}
+
 function editIcon() {
   return `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>`;
 }
+
 function trashIcon() {
   return `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path></svg>`;
 }
 
-/* ---------- Delete confirmation modal ---------- */
+/* ---------- Delete Confirmation Modal ---------- */
 let pendingDeleteId = null;
 
 function initDeleteModal() {
   const overlay = document.getElementById('delete-modal');
   const cancelBtn = document.getElementById('delete-cancel');
   const confirmBtn = document.getElementById('delete-confirm');
-  if (!overlay) return;
+  if (!overlay || !cancelBtn || !confirmBtn) return;
 
   cancelBtn.addEventListener('click', closeDeleteModal);
-  overlay.addEventListener('click', (e) => { if (e.target === overlay) closeDeleteModal(); });
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeDeleteModal();
+  });
+
   confirmBtn.addEventListener('click', async () => {
-    if (pendingDeleteId == null) { closeDeleteModal(); return; }
+    if (!pendingDeleteId) {
+      closeDeleteModal();
+      return;
+    }
 
     confirmBtn.disabled = true;
+    confirmBtn.textContent = 'Deleting…';
+
     try {
       await api.blogs.remove(pendingDeleteId);
-      showToast('Post deleted.', 'success');
+      showToast('Story deleted successfully.', 'success');
       closeDeleteModal();
       await loadDashboard();
     } catch (err) {
-      showToast(err.message || 'Could not delete this post.', 'error');
+      showToast(err.message || 'Could not delete this story.', 'error');
       closeDeleteModal();
     } finally {
       confirmBtn.disabled = false;
+      confirmBtn.textContent = 'Delete Story';
     }
   });
 }
 
 function openDeleteModal(id) {
   pendingDeleteId = id;
-  document.getElementById('delete-modal').classList.add('open');
+  const overlay = document.getElementById('delete-modal');
+  if (overlay) overlay.classList.add('open');
 }
 
 function closeDeleteModal() {
   pendingDeleteId = null;
-  document.getElementById('delete-modal').classList.remove('open');
+  const overlay = document.getElementById('delete-modal');
+  if (overlay) overlay.classList.remove('open');
 }

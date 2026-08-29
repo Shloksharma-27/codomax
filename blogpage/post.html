@@ -4,10 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Papertrail — Story</title>
-<meta name="description" content="Read the full story on Papertrail.">
+<meta name="description" content="Read full editorial stories and insights on Papertrail.">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body id="post-page">
+
+<div class="reading-progress-bar" id="reading-progress-bar"></div>
 
 <header class="site-header">
   <div class="container nav">
@@ -19,10 +21,11 @@
       <a href="create-blog.html" data-page="create-blog.html">Create Blog</a>
     </nav>
     <div class="nav-actions" id="nav-actions-desktop"></div>
-    <button class="hamburger" id="hamburger-btn" aria-label="Toggle menu" aria-expanded="false">
+    <button class="hamburger" id="hamburger-btn" aria-label="Toggle navigation menu" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
   </div>
+  <div class="mobile-menu-backdrop" id="mobile-menu-backdrop"></div>
   <div class="mobile-menu" id="mobile-menu"></div>
 </header>
 
@@ -30,20 +33,45 @@
   <div class="container post-container">
     <a href="index.html" class="back-link">&larr; Back to all stories</a>
 
-    <div id="post-status" class="feed-status">Loading story…</div>
+    <!-- Skeleton Loading State -->
+    <div id="post-skeleton" class="post-article">
+      <div class="skeleton skeleton-tag" style="width: 100px; height: 24px; margin-bottom: 16px;"></div>
+      <div class="skeleton skeleton-title" style="width: 85%; height: 44px; margin-bottom: 14px;"></div>
+      <div class="skeleton skeleton-title" style="width: 60%; height: 44px; margin-bottom: 24px;"></div>
+      <div class="skeleton skeleton-meta" style="width: 50%; height: 18px; margin-bottom: 32px;"></div>
+      <div class="skeleton" style="width: 100%; height: 360px; border-radius: var(--radius-lg); margin-bottom: 36px;"></div>
+      <div class="skeleton skeleton-line" style="margin-bottom: 12px;"></div>
+      <div class="skeleton skeleton-line" style="margin-bottom: 12px;"></div>
+      <div class="skeleton skeleton-line short" style="margin-bottom: 24px;"></div>
+      <div class="skeleton skeleton-line" style="margin-bottom: 12px;"></div>
+      <div class="skeleton skeleton-line short" style="margin-bottom: 12px;"></div>
+    </div>
 
+    <!-- Error / Status banner -->
+    <div id="post-status" class="feed-status hidden"></div>
+
+    <!-- Rendered Post Article -->
     <article id="post-article" class="post-article hidden">
       <span class="category-tag" id="post-category"></span>
       <h1 id="post-title"></h1>
+      
       <div class="meta-row post-meta">
-        <span id="post-author"></span>
+        <span id="post-author-wrap">By <strong id="post-author"></strong></span>
         <span class="sep">&middot;</span>
         <span id="post-date"></span>
         <span class="sep">&middot;</span>
         <span id="post-reading-time"></span>
         <span class="sep">&middot;</span>
         <span id="post-views"></span>
+        
+        <div class="post-actions-bar">
+          <button type="button" class="share-btn" id="copy-link-btn" title="Copy article link">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            <span>Share</span>
+          </button>
+        </div>
       </div>
+
       <div class="post-media" id="post-media"></div>
       <div class="post-body" id="post-body"></div>
       <div class="post-tags" id="post-tags"></div>
@@ -56,33 +84,34 @@
     <div class="footer-grid">
       <div class="footer-brand">
         <a href="index.html" class="brand">Papertrail<span class="dot">.</span></a>
-        <p>A small blog about design, technology, and the work habits behind them. Written and maintained by its own readers.</p>
+        <p>A full-stack editorial blog platform built for sharing craft, ideas, and software perspectives.</p>
       </div>
       <div class="footer-col">
-        <h4>Navigate</h4>
+        <h4>Navigation</h4>
         <ul>
           <li><a href="index.html">Home</a></li>
-          <li><a href="index.html#latest-articles">Explore</a></li>
-          <li><a href="login.html">Login</a></li>
-          <li><a href="register.html">Register</a></li>
+          <li><a href="index.html#latest-articles">Explore Stories</a></li>
+          <li><a href="dashboard.html">Author Dashboard</a></li>
+          <li><a href="create-blog.html">Write a Story</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h4>Categories</h4>
         <ul>
-          <li><a href="index.html#latest-articles">Technology</a></li>
-          <li><a href="index.html#latest-articles">Design</a></li>
-          <li><a href="index.html#latest-articles">Productivity</a></li>
-          <li><a href="index.html#latest-articles">Career</a></li>
+          <li><a href="index.html" data-category-link="Technology">Technology</a></li>
+          <li><a href="index.html" data-category-link="Design">Design</a></li>
+          <li><a href="index.html" data-category-link="Productivity">Productivity</a></li>
+          <li><a href="index.html" data-category-link="Career">Career</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      <span>&copy; 2026 Papertrail. All rights reserved.</span>
+      <span>&copy; 2026 Papertrail Blog Platform. All rights reserved.</span>
     </div>
   </div>
 </footer>
 
+<script src="config.js"></script>
 <script src="js/api.js"></script>
 <script src="js/data.js"></script>
 <script src="js/main.js"></script>
