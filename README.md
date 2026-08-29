@@ -3,9 +3,17 @@
 [![Node.js](https://img.shields.io/badge/Node.js-v18%2B-green.svg)](https://nodejs.org/)
 [![Express](https://img.shields.io/badge/Express-4.19%2B-blue.svg)](https://expressjs.com/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-Atlas%20%2F%20Mongoose%208-brightgreen.svg)](https://www.mongodb.com/)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Vercel-black.svg)](https://codomax-rho.vercel.app)
+[![API Server](https://img.shields.io/badge/API%20Server-Render-46E3B7.svg)](https://papertrail-backend-f6w2.onrender.com/api)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](#license)
 
 Papertrail is a modern, production-ready Full-Stack Blog and Editorial Publishing Application. Built with an **Express + MongoDB (Mongoose)** backend REST API and a **clean, responsive Vanilla HTML5/CSS3/JavaScript** frontend, Papertrail delivers a reading and publishing experience with zero unnecessary framework bloat.
+
+### 🌐 Live Production Deployments
+- 🚀 **Live Web Application**: [https://codomax-rho.vercel.app](https://codomax-rho.vercel.app)
+- ⚙️ **Production REST API**: [https://papertrail-backend-f6w2.onrender.com/api](https://papertrail-backend-f6w2.onrender.com/api)
+- 🗄️ **Database Cluster**: MongoDB Atlas (`Cluster0`)
+- 📦 **GitHub Repository**: [https://github.com/Shloksharma-27/codomax](https://github.com/Shloksharma-27/codomax)
 
 ---
 
