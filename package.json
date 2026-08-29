@@ -7,6 +7,7 @@
     "start": "node serve-frontend.js",
     "frontend": "node serve-frontend.js",
     "backend": "node backend/src/server.js",
+    "seed": "node backend/src/data/seed.js",
     "test": "node test_crud_integration.mjs && node test_auth_dashboard.mjs"
   },
   "engines": {
