@@ -14,7 +14,7 @@
   // Local fallback on localhost vs Render production URL on deployed domains
   const defaultUrl = isLocal
     ? 'http://localhost:5000/api'
-    : 'https://papertrail-backend.onrender.com/api';
+    : 'https://papertrail-backend-f6w2.onrender.com/api';
 
   window.PAPERTRAIL_CONFIG = {
     // Priority: custom window var -> localStorage override -> defaultUrl
