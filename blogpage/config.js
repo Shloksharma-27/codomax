@@ -3,7 +3,7 @@
  *
  * For local development: defaults to http://localhost:5000/api
  * For production deployment (Vercel / Netlify / Custom Domain):
- * Set your backend Render/production API URL here or via window.__API_URL__.
+ * Uses the Render production backend URL.
  */
 (function () {
   const isLocal =
@@ -11,8 +11,10 @@
     window.location.hostname === '127.0.0.1' ||
     window.location.hostname === '';
 
-  // Local fallback or production API URL
-  const defaultUrl = isLocal ? 'http://localhost:5000/api' : 'http://localhost:5000/api';
+  // Local fallback on localhost vs Render production URL on deployed domains
+  const defaultUrl = isLocal
+    ? 'http://localhost:5000/api'
+    : 'https://papertrail-backend.onrender.com/api';
 
   window.PAPERTRAIL_CONFIG = {
     // Priority: custom window var -> localStorage override -> defaultUrl
