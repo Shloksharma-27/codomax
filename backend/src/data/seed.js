@@ -15,15 +15,15 @@ import Blog from '../models/Blog.js';
 async function seed() {
   await connectDB();
 
-  // Find or create primary author
-  let author = await User.findOne({ email: 'alex.morgan@papertrail.dev' });
+  // Find or create primary author Shlok Sharma
+  let author = await User.findOne({ email: 'shlokrahul1@gmail.com' });
   if (!author) {
     author = await User.create({
-      name: 'Alex Morgan',
-      email: 'alex.morgan@papertrail.dev',
-      password: 'Papertrail@2026'
+      name: 'Shlok Sharma',
+      email: 'shlokrahul1@gmail.com',
+      password: 'Shlok@2026'
     });
-    console.log('Created primary author Alex Morgan');
+    console.log('Created primary author Shlok Sharma');
   }
 
   // Delete all old automated test posts that have numeric timestamps
@@ -226,7 +226,9 @@ const successful = results
       await Blog.create(postData);
       console.log(`✅ Created: "${postData.title}"`);
     } else {
-      console.log(`ℹ️ Already exists: "${postData.title}"`);
+      existing.author = author._id;
+      await existing.save();
+      console.log(`ℹ️ Updated author for: "${postData.title}"`);
     }
   }
 

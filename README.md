@@ -410,5 +410,8 @@ node test_auth_dashboard.mjs
 
 ## 👨‍💻 Author & License
 
-- **Project**: Papertrail Full-Stack Blog Platform
+- **Author**: **Shlok Sharma**
+- **GitHub**: [@Shloksharma-27](https://github.com/Shloksharma-27)
+- **LinkedIn**: [Shlok Sharma](https://www.linkedin.com/in/shlok-sharma-4167842a7/)
+- **Project**: Papertrail Full-Stack Editorial Blog Platform
 - **License**: MIT License — open for educational and commercial use.

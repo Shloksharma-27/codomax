@@ -2,6 +2,7 @@
   "name": "blog-application",
   "version": "1.0.0",
   "description": "Papertrail full-stack blog application",
+  "author": "Shlok Sharma",
   "type": "module",
   "scripts": {
     "start": "node serve-frontend.js",

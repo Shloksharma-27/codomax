@@ -2,6 +2,7 @@
   "name": "papertrail-backend",
   "version": "1.0.0",
   "description": "Express + MongoDB backend for the Papertrail blog application",
+  "author": "Shlok Sharma",
   "type": "module",
   "main": "src/server.js",
   "scripts": {
